@@ -38,19 +38,18 @@ WATCHLIST = [
 
 def get_usd_krw():
     try:
-        url = "https://m.stock.naver.com/api/forex/recent?symbol=FX_USDKRW"
+        url = "https://query1.finance.yahoo.com/v8/finance/chart/KRW=X?interval=1d&range=1d"
         req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)",
-            "Referer": "https://m.stock.naver.com"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         })
         with urllib.request.urlopen(req, timeout=5) as r:
             data = json.loads(r.read())
-        rate = data.get("closePrice", 0)
+        rate = data["chart"]["result"][0]["meta"]["regularMarketPrice"]
         if rate:
-            return float(str(rate).replace(",", ""))
+            return float(rate)
     except Exception as e:
         print("fx error", e)
-    return 1380.0
+    return 1537.0
 
 def get_kr_quote(code):
     try:
@@ -201,7 +200,7 @@ def make_html():
     html += "<div class='header'>"
     html += "<h1>💼 모닝 브리핑</h1>"
     html += "<div class='date'>" + DATE_DISPLAY + " · " + TIME_DISPLAY + " KST</div>"
-    html += "<div class='fx'>USD/KRW " + "{:,.2f}".format(usd_krw) + "원</div>"
+    html += "<div class='fx'>USD/KRW " + "{:,.2f}".format() + "원</div>"
     html += "</div>\n"
 
     html += "<div class='card'>"
