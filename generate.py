@@ -22,7 +22,7 @@ HOLDINGS_KR = [
 HOLDINGS_US = [
     {"name": "로켓 랩",       "symbol": "RKLB",  "shares": 51.13, "avg": 64.44},
     {"name": "네비우스 그룹", "symbol": "NBIS",  "shares": 15.09, "avg": 191.41},
-    {"name": "인플렉션",      "symbol": "INFN",  "shares": 300,   "avg": 15.33},
+    {"name": "인플렉션",      "symbol": "INFQ",  "shares": 300,   "avg": 15.33},
     {"name": "알파벳 A",      "symbol": "GOOGL", "shares": 7.99,  "avg": 325.25},
     {"name": "TMC 더 메탈스", "symbol": "TMC",   "shares": 320,   "avg": 7.13},
     {"name": "엔비디아",      "symbol": "NVDA",  "shares": 0.81,  "avg": 185.29},
