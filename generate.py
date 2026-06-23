@@ -38,12 +38,16 @@ WATCHLIST = [
 
 def get_usd_krw():
     try:
-        url = "https://finnhub.io/api/v1/forex/rates?base=USD&token=" + API_KEY
-        with urllib.request.urlopen(url, timeout=5) as r:
+        url = "https://m.stock.naver.com/api/forex/recent?symbol=FX_USDKRW"
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)",
+            "Referer": "https://m.stock.naver.com"
+        })
+        with urllib.request.urlopen(req, timeout=5) as r:
             data = json.loads(r.read())
-        rate = data.get("quote", {}).get("KRW", 0)
+        rate = data.get("closePrice", 0)
         if rate:
-            return float(rate)
+            return float(str(rate).replace(",", ""))
     except Exception as e:
         print("fx error", e)
     return 1380.0
