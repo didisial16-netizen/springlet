@@ -200,7 +200,7 @@ def make_html():
     html += "<div class='header'>"
     html += "<h1>💼 모닝 브리핑</h1>"
     html += "<div class='date'>" + DATE_DISPLAY + " · " + TIME_DISPLAY + " KST</div>"
-    html += "<div class='fx'>USD/KRW " + "{:,.2f}".format() + "원</div>"
+    html += "<div class='fx'>USD/KRW " + "{:,.2f}".format(usd_krw) + "원</div>"
     html += "</div>\n"
 
     html += "<div class='card'>"
