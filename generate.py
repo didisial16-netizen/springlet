@@ -121,6 +121,56 @@ def holding_rows_kr(items):
         rows += "</tr>\n"
     return rows
 
+def kr_summary(items):
+    total_eval = 0
+    total_cost = 0
+    total_pnl = 0
+    for h in items:
+        q = get_kr_quote(h["code"])
+        p = q["price"]
+        if p:
+            eval_amt = p * h["shares"]
+            cost_amt = h["avg"] * h["shares"]
+            total_eval += eval_amt
+            total_cost += cost_amt
+            total_pnl += eval_amt - cost_amt
+    if not total_eval:
+        return ""
+    pnl_pct = (total_eval - total_cost) / total_cost * 100 if total_cost else 0
+    row = "<tr style='background:#f0f4ff;font-weight:700;border-top:2px solid #c5cae9'>"
+    row += "<td>📊 합계</td>"
+    row += "<td></td><td></td>"
+    row += "<td style='text-align:right;color:" + color(pnl_pct) + "'>" + sign(pnl_pct) + "</td>"
+    row += "<td style='text-align:right;font-weight:700'>" + fmt_krw(total_eval) + "</td>"
+    row += "<td style='text-align:right;color:" + color(total_pnl) + ";font-weight:700'>" + fmt_amt(total_pnl) + "</td>"
+    row += "</tr>"
+    return row
+
+def us_summary(items, usd_krw):
+    total_eval = 0
+    total_cost = 0
+    total_pnl = 0
+    for h in items:
+        q = get_us_quote(h["symbol"])
+        p = q["price"]
+        if p:
+            eval_krw = p * h["shares"] * usd_krw
+            cost_krw = h["avg"] * h["shares"] * usd_krw
+            total_eval += eval_krw
+            total_cost += cost_krw
+            total_pnl += eval_krw - cost_krw
+    if not total_eval:
+        return ""
+    pnl_pct = (total_eval - total_cost) / total_cost * 100 if total_cost else 0
+    row = "<tr style='background:#f0f4ff;font-weight:700;border-top:2px solid #c5cae9'>"
+    row += "<td>📊 합계</td>"
+    row += "<td></td><td></td>"
+    row += "<td style='text-align:right;color:" + color(pnl_pct) + "'>" + sign(pnl_pct) + "</td>"
+    row += "<td style='text-align:right;font-weight:700'>" + fmt_krw(total_eval) + "</td>"
+    row += "<td style='text-align:right;color:" + color(total_pnl) + ";font-weight:700'>" + fmt_amt(total_pnl) + "</td>"
+    row += "</tr>"
+    return row
+    
 def holding_rows_us(items, usd_krw):
     rows = ""
     for h in items:
@@ -193,12 +243,12 @@ def make_html():
     html = "<!DOCTYPE html>\n<html lang='ko'>\n<head>\n"
     html += "<meta charset='UTF-8'>\n"
     html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n"
-    html += "<title>모닝 브리핑 " + DATE_DISPLAY + "</title>\n"
+    html += "<title>주식현황 브리핑 " + DATE_DISPLAY + "</title>\n"
     html += "<style>" + css + "</style>\n"
     html += "</head>\n<body>\n<div class='wrap'>\n"
 
     html += "<div class='header'>"
-    html += "<h1>💼 모닝 브리핑</h1>"
+    html += "<h1>💼 주식현황 브리핑</h1>"
     html += "<div class='date'>" + DATE_DISPLAY + " · " + TIME_DISPLAY + " KST</div>"
     html += "<div class='fx'>USD/KRW " + "{:,.2f}".format(usd_krw) + "원</div>"
     html += "</div>\n"
@@ -207,12 +257,14 @@ def make_html():
     html += "<h2>🇰🇷 국내 보유주식</h2>"
     html += "<table><tr><th>종목</th><th>현재가</th><th>등락률</th><th>수익률</th><th>평가액(원)</th><th>손익(원)</th></tr>"
     html += holding_rows_kr(HOLDINGS_KR)
+    html += kr_summary(HOLDINGS_KR)
     html += "</table></div>\n"
 
     html += "<div class='card'>"
     html += "<h2>🌍 해외 보유주식</h2>"
     html += "<table><tr><th>종목</th><th>현재가</th><th>등락률</th><th>수익률</th><th>평가액(원)</th><th>손익(원)</th></tr>"
     html += holding_rows_us(HOLDINGS_US, usd_krw)
+    html += us_summary(HOLDINGS_US, usd_krw)
     html += "</table></div>\n"
 
     html += "<div class='card'>"
